@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comparador de Marketplaces - Demo Front-End</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="description" content="Demo educativa. Datos simulados. Comparador de productos (AliExpress, Temu, Shopify).">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">📦 Comparador</div>
+      <nav class="main-nav" aria-label="Menú principal">
+        <a href="#home" class="active">Home</a>
+        <a href="#ayuda">Ayuda</a>
+        <a href="#acerca">Acerca</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="home" class="panel search-panel" aria-labelledby="search-heading">
+      <h1 id="search-heading">🔍 Buscar y comparar productos</h1>
+      <p style="color:#64748b;margin-bottom:24px;font-size:16px">Compara precios, envío y tiempos de entrega de AliExpress, Temu y Shopify en un solo lugar.</p>
+
+      <form id="filtersForm" class="filters" novalidate>
+        <!-- Fila 1: Búsqueda principal -->
+        <div class="filter-row full-width">
+          <label for="q">🔎 Palabra clave</label>
+          <input id="q" name="q" type="search" placeholder="Buscar por título o marca..." aria-label="Buscar por palabra clave">
+        </div>
+
+        <!-- Fila 2: Marketplaces -->
+        <div class="filter-row full-width">
+          <label>🏪 Marketplaces</label>
+          <div class="marketplaces-grid">
+            <label class="marketplace-item">
+              <input type="checkbox" name="marketplace" value="aliexpress" checked>
+              <span class="marketplace-label aliexpress">AliExpress</span>
+            </label>
+            <label class="marketplace-item">
+              <input type="checkbox" name="marketplace" value="temu" checked>
+              <span class="marketplace-label temu">Temu</span>
+            </label>
+            <label class="marketplace-item">
+              <input type="checkbox" name="marketplace" value="shopify" checked>
+              <span class="marketplace-label shopify">Shopify</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Fila 3: Marca y Rango de precio -->
+        <div class="filter-row">
+          <label for="brand">🏷️ Marca</label>
+          <select id="brand" name="brand">
+            <option value="">-- Todas --</option>
+          </select>
+        </div>
+
+        <div class="filter-row">
+          <label>💰 Rango de precio</label>
+          <div class="input-group">
+            <input id="priceMin" name="priceMin" type="number" placeholder="Mín" min="0" step="0.01">
+            <span class="separator">—</span>
+            <input id="priceMax" name="priceMax" type="number" placeholder="Máx" min="0" step="0.01">
+          </div>
+        </div>
+
+        <!-- Fila 4: Envío y Solo oferta -->
+        <div class="filter-row">
+          <label for="maxShippingDays">📦 Envío máximo (días)</label>
+          <input id="maxShippingDays" name="maxShippingDays" type="number" min="0" placeholder="ej. 15">
+        </div>
+
+        <div class="filter-row checkbox-row">
+          <label class="checkbox-label">
+            <input id="onlyOffers" name="onlyOffers" type="checkbox">
+            <span>🔥 Solo productos en oferta</span>
+          </label>
+        </div>
+
+        <!-- Fila 5: Acciones y Vista -->
+        <div class="filter-actions full-width">
+          <button type="button" id="btnSearch" class="btn primary">🔍 Buscar</button>
+          <button type="button" id="btnClear" class="btn secondary">🔄 Limpiar</button>
+          <div class="spacer"></div>
+          <label for="viewMode" class="view-label">👁️ Vista:</label>
+          <select id="viewMode" aria-label="Modo de vista" class="view-select">
+            <option value="cards">📱 Tarjetas</option>
+            <option value="table">📊 Tabla</option>
+          </select>
+        </div>
+      </form>
+    </section>
+
+    <section id="results" class="panel results-panel">
+      <div class="results-header">
+        <div>
+          <span id="resultsCount">0</span> resultados
+          <div id="activeFilters" class="filters-chips" aria-live="polite"></div>
+        </div>
+
+        <div class="controls">
+          <label for="sortSelect">Ordenar:</label>
+          <select id="sortSelect">
+            <option value="price_total_asc">Precio total ↑</option>
+            <option value="price_total_desc">Precio total ↓</option>
+            <option value="fastest_shipping">Envío más rápido</option>
+            <option value="best_price_time">Mejor relación precio/tiempo</option>
+          </select>
+          <button id="exportBtn" class="btn">Exportar</button>
+        </div>
+      </div>
+
+      <div id="resultsArea">
+        <div id="cardsView" class="cards grid"></div>
+        <div id="tableView" class="table-wrap hidden">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th data-key="image">Imagen</th>
+                <th data-key="title">Título</th>
+                <th data-key="brand">Marca</th>
+                <th data-key="marketplace">Marketplace</th>
+                <th data-key="price_amount">Precio</th>
+                <th data-key="shipping_cost">Envío</th>
+                <th data-key="price_total">Precio total</th>
+                <th data-key="shipping_time_days">Tiempo envío (d)</th>
+                <th data-key="is_offer">Oferta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="noResults" class="no-results hidden">
+        <p>No se encontraron resultados. Prueba con menos filtros o elimina algunos.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>
+        <small><strong>Demo Front-End</strong> – Datos simulados. No hay conexión a APIs reales.</small>
+        <br>
+        <small style="color:#94a3b8">Proyecto educativo de comparación de productos.</small>
+      </div>
+      <nav>
+        <a href="#ayuda">Ayuda / FAQ</a> · <a href="#acerca">Acerca</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/normalizer.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
